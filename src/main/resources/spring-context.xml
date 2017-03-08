@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:component-scan base-package="com.testmonkeys.selenium.wrapper"/>
+
+    <bean id="systemPoperties"
+          class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" value="#{@systemProperties}"/>
+        <property name="targetMethod" value="putAll"/>
+        <property name="arguments">
+            <!-- The new Properties -->
+            <util:properties>
+                <prop key="webdriver.chrome.driver">./driver/chromedriver</prop>
+            </util:properties>
+        </property>
+    </bean>
+
+    <bean id="pagesPackage" class="java.lang.String">
+        <constructor-arg value="com.testmonkeys.selenium.wrapper.pages"/>
+    </bean>
+
+    <bean id="driverFactory" class="com.testmonkeys.selenium.wrapper.browser.DriverFactory"/>
+
+    <bean id="browser" class="com.testmonkeys.selenium.wrapper.browser.Browser" factory-bean="driverFactory"
+          factory-method="initDriver">
+        <constructor-arg name="type" value="chrome"/>
+    </bean>
+
+    <bean id="pageFactory" class="com.testmonkeys.selenium.wrapper.factory.PageFactory">
+        <constructor-arg ref="browser"/>
+        <constructor-arg ref="pagesPackage"/>
+    </bean>
+
+</beans>
