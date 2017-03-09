@@ -28,9 +28,12 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
     <bean id="driverFactory" class="com.testmonkeys.selenium.wrapper.browser.DriverFactory"/>
 
-    <bean id="browser" class="com.testmonkeys.selenium.wrapper.browser.Browser" factory-bean="driverFactory"
-          factory-method="initDriver">
+    <bean id="driver" class="org.openqa.selenium.WebDriver" factory-bean="driverFactory" factory-method="initDriver">
         <constructor-arg name="type" value="chrome"/>
+    </bean>
+
+    <bean id="browser" class="com.testmonkeys.selenium.wrapper.browser.Browser">
+        <constructor-arg ref="driver"/>
     </bean>
 
     <bean id="pageFactory" class="com.testmonkeys.selenium.wrapper.factory.PageFactory">

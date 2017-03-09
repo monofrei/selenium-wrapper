@@ -63,4 +63,8 @@ public class Browser {
     public String getCurrentUrl() {
         return driver.getCurrentUrl();
     }
+
+    public void quit() {
+        this.driver.quit();
+    }
 }
