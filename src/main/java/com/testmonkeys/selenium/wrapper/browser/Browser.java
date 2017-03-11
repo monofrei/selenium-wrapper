@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 public class Browser {
 
@@ -37,12 +36,12 @@ public class Browser {
     }
 
 
-    public WebElement findElement(By by) {
-        return waiter.until((Function<WebDriver, WebElement>) webDriver -> webDriver.findElement(by));
+    public WebElement findElement(String xpath) {
+        return waiter.until(webDriver -> webDriver.findElement(By.xpath(xpath)));
     }
 
-    public List<WebElement> findElements(By by) {
-        return waiter.until((Function<WebDriver, List<WebElement>>) webDriver -> webDriver.findElements(by));
+    public List<WebElement> findElements(String xpath) {
+        return waiter.until(webDriver -> webDriver.findElements(By.xpath(xpath)));
     }
 
     private FluentWait<WebDriver> initWaitter(int timeout, int step, TimeUnit unit) {

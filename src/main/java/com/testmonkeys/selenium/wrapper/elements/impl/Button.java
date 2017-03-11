@@ -1,13 +1,13 @@
 package com.testmonkeys.selenium.wrapper.elements.impl;
 
 import com.testmonkeys.selenium.wrapper.browser.Browser;
-import com.testmonkeys.selenium.wrapper.elements.AbstractWebElement;
-import org.openqa.selenium.By;
+import com.testmonkeys.selenium.wrapper.elements.AbstractComponent;
+import com.testmonkeys.selenium.wrapper.elements.Component;
 
-public class Button extends AbstractWebElement {
+public class Button extends AbstractComponent {
 
-    public Button(String name, By locator, Browser browser, AbstractWebElement parent) {
-        super(name, locator, browser, parent);
+    public Button(Browser browser, String name, Component parent, String xpath) {
+        super(name, xpath, browser, parent);
     }
 
     public void click() {
