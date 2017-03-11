@@ -12,11 +12,12 @@ public class SamplePage extends AbstractPage {
     @ElementAccessor(name = "Button", xpath = "//*")
     private Button button;
 
-    public SamplePage(String url, String name, Browser browser) {
+    public SamplePage(Browser browser, String url, String name) {
         super(url, name, browser);
     }
 
     public Button button() {
         return button;
     }
+
 }

@@ -2,7 +2,7 @@ package com.testmonkeys.selenium.wrapper.page;
 
 import com.testmonkeys.selenium.wrapper.browser.Browser;
 
-public abstract class AbstractPage {
+public abstract class AbstractPage implements Page {
 
     private String url;
     private String name;
@@ -18,11 +18,26 @@ public abstract class AbstractPage {
         return url;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
     public Browser getBrowser() {
         return browser;
+    }
+
+    @Override
+    public void open() {
+        browser.goTo(url);
+    }
+
+    @Override
+    public String title() {
+        return browser.getTitle();
+    }
+
+    @Override
+    public boolean isCurrentPage() {
+        return browser.getDriver().getCurrentUrl().startsWith(url);
     }
 }

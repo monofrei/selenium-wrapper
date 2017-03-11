@@ -26,6 +26,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         <constructor-arg value="com.testmonkeys.selenium.wrapper.pages"/>
     </bean>
 
+    <bean id="baseUrl" class="java.lang.String">
+        <constructor-arg value="http://google.com"/>
+    </bean>
+
     <bean id="driverFactory" class="com.testmonkeys.selenium.wrapper.browser.DriverFactory"/>
 
     <bean id="driver" class="org.openqa.selenium.WebDriver" factory-bean="driverFactory" factory-method="initDriver">
@@ -36,9 +40,14 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         <constructor-arg ref="driver"/>
     </bean>
 
+    <bean id="pageScanner" class="com.testmonkeys.selenium.wrapper.factory.PageScanner">
+        <constructor-arg ref="pagesPackage"/>
+    </bean>
+
     <bean id="pageFactory" class="com.testmonkeys.selenium.wrapper.factory.PageFactory">
         <constructor-arg ref="browser"/>
-        <constructor-arg ref="pagesPackage"/>
+        <constructor-arg ref="pageScanner"/>
+        <constructor-arg ref="baseUrl"/>
     </bean>
 
 </beans>

@@ -67,4 +67,8 @@ public class Browser {
     public void quit() {
         this.driver.quit();
     }
+
+    public WebDriver getDriver() {
+        return driver;
+    }
 }
