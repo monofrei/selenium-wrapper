@@ -11,10 +11,7 @@ import com.testmonkeys.selenium.wrapper.page.Page;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -38,22 +35,23 @@ public class PageFactory {
     }
 
     public static <T> T newInstance(Class<T> type, Object... parameters) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        List<Class<?>> collect = Arrays.asList(parameters).stream()
-                .map(o -> {
-                    if (o instanceof Class) return ((Class<?>) o);
-                    else return o.getClass();
-                }).collect(Collectors.toList());
+
+        List<Class<?>> collect = new ArrayList<>();
+
+        for (Object parameter : parameters) {
+            if (parameter instanceof Class) collect.add((Class<?>) parameter);
+            else collect.add(parameter.getClass());
+        }
+
         Class<?>[] arguments = collect.toArray(new Class[collect.size()]);
         Constructor<?> constructor = type.getConstructor(arguments);
 
-        //TODO temporary solution to handle when parent is null
-        Object[] objects = Arrays.asList(parameters).stream()
-                .map(o -> {
-                    if (o instanceof Class && ((Class) o).getSimpleName().equals("Component")) return null;
-                    else return o;
-                }).collect(Collectors.toList()).toArray();
+        parameters = Arrays.stream(parameters).map(p -> {
+            if (p instanceof Class) return null;
+            else return p;
+        }).collect(Collectors.toList()).toArray();
 
-        return type.cast(constructor.newInstance(objects));
+        return type.cast(constructor.newInstance(parameters));
     }
 
     private static Predicate<Field> isElement() {

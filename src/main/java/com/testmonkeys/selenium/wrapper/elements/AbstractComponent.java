@@ -35,7 +35,7 @@ public class AbstractComponent implements Component {
     }
 
     public WebElement find() {
-        return browser.findElement(this.xpath);
+        return browser.findElement(this.getFullXpath());
     }
 
     @Override
@@ -45,11 +45,11 @@ public class AbstractComponent implements Component {
 
     @Override
     public List<WebElement> findAll() {
-        return null;
+        return browser.findElements(this.getFullXpath());
     }
 
     @Override
     public String getFullXpath() {
-        return null;
+        return parent != null ? parent.getFullXpath() + xpath : xpath;
     }
 }
