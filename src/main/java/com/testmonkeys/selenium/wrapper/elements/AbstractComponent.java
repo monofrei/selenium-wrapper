@@ -13,7 +13,7 @@ public class AbstractComponent implements Component {
 
     private Component parent;
 
-    public AbstractComponent(String name, String xpath, Browser browser, Component parent) {
+    public AbstractComponent(Browser browser, String name, Component parent, String xpath) {
         this.name = name;
         this.xpath = xpath;
         this.browser = browser;

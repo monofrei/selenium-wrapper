@@ -11,7 +11,10 @@ import com.testmonkeys.selenium.wrapper.page.Page;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -36,16 +39,19 @@ public class PageFactory {
 
     public static <T> T newInstance(Class<T> type, Object... parameters) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
-        List<Class<?>> collect = new ArrayList<>();
+        //TODO the commented logic identifies automatically the constructor but because the parent component is of type Interface but in this method it comes as the
+        //TODO concrete class it failes, need to find a better solution, for now get first constructor is fine.
+//        List<Class<?>> collect = new ArrayList<>();
+//
+//        for (Object parameter : parameters) {
+//            if (parameter instanceof Class) collect.add((Class<?>) parameter);
+//            else collect.add(parameter.getClass());
+//        }
+//
+//        Class<?>[] arguments = collect.toArray(new Class[collect.size()]);
+//        Constructor<?> constructor = type.getConstructor(arguments);
 
-        for (Object parameter : parameters) {
-            if (parameter instanceof Class) collect.add((Class<?>) parameter);
-            else collect.add(parameter.getClass());
-        }
-
-        Class<?>[] arguments = collect.toArray(new Class[collect.size()]);
-        Constructor<?> constructor = type.getConstructor(arguments);
-
+        Constructor<?> constructor = type.getDeclaredConstructors()[0];
         parameters = Arrays.stream(parameters).map(p -> {
             if (p instanceof Class) return null;
             else return p;
@@ -77,7 +83,7 @@ public class PageFactory {
 
             T t = newInstance(type, this.browser, url, pageAccessor.name());
 
-            createPageContent(browser, t);
+            createPageContent(browser, t, null);
 
             cache.put(t.getClass(), t);
             return t;
@@ -86,20 +92,20 @@ public class PageFactory {
         }
     }
 
-    private Page createPageContent(Browser browser, Page page) throws IllegalAccessException {
+    private <T> T createPageContent(Browser browser, T container, Component parent) throws IllegalAccessException {
 
-        List<Field> elements = extractFieldsByPredicate(page.getClass(), isElement());
+        List<Field> elements = extractFieldsByPredicate(container.getClass(), isElement());
 
         for (Field field : elements) {
             field.setAccessible(true);
 
-            Component component = createComponent(browser, field, null);
-            field.set(page, component);
+            Component component = createComponent(browser, field, parent);
+            field.set(container, component);
         }
-        return page;
+        return container;
     }
 
-    private Component createComponent(Browser browser, Field field, Component parent) {
+    private Component createComponent(Browser browser, Field field, Component parent) throws IllegalAccessException {
         ElementAccessor annotation = field.getAnnotation(ElementAccessor.class);
 
         Class<? extends Component> elementType = (Class<? extends Component>) field.getType();
@@ -109,7 +115,7 @@ public class PageFactory {
         Component component = createInstance(elementType, field, browser, annotation.name(), parentObject, annotation.xpath());
 
         if (Arrays.asList(field.getType().getInterfaces()).contains(Module.class)) {
-            //TODO init module
+            createPageContent(browser, component, component);
         }
 
         return component;

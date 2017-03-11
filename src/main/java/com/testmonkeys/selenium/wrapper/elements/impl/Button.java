@@ -7,7 +7,7 @@ import com.testmonkeys.selenium.wrapper.elements.Component;
 public class Button extends AbstractComponent {
 
     public Button(Browser browser, String name, Component parent, String xpath) {
-        super(name, xpath, browser, parent);
+        super(browser, name, parent, xpath);
     }
 
     public void click() {

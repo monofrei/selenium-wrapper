@@ -12,6 +12,9 @@ public class SamplePage extends AbstractPage {
     @ElementAccessor(name = "Button", xpath = "//*")
     private Button button;
 
+    @ElementAccessor(name = "Sample Module", xpath = "//module")
+    private SomeModule someModule;
+
     public SamplePage(Browser browser, String url, String name) {
         super(url, name, browser);
     }
@@ -20,4 +23,7 @@ public class SamplePage extends AbstractPage {
         return button;
     }
 
+    public SomeModule someModule() {
+        return someModule;
+    }
 }
